@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Lists as ModelsLists;
+use App\Models\Todo;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -45,6 +46,7 @@ class Lists extends Controller
 
         $validated['slug'] = Str::slug($request->name_list);
         $validated['user_id'] = Auth::user()->id;
+        $request->session()->put('name_list', $request->name_list);
 
         ModelsLists::create($validated);
 
@@ -94,6 +96,9 @@ class Lists extends Controller
      */
     public function destroy($id)
     {
-        //
+        ModelsLists::destroy($id);
+        Todo::where('lists_id', $id)->delete();
+        
+        return dd('oke');
     }
 }

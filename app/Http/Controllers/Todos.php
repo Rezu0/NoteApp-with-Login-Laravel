@@ -15,11 +15,15 @@ class Todos extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        
         return view('todo.index', [
             'title' => 'Todo List Page!',
-            'list' => Lists::with('todo')->where('user_id', auth()->user()->id)->latest()->paginate(5)
+            'list' => Lists::with('todo')->where('user_id', auth()->user()->id)->latest()->paginate(5),
+            'count' => Todo::with('lists')
+                        ->where('finish', false)
+                        ->where('user_id', auth()->user()->id)
         ]);
     }
 
@@ -28,12 +32,26 @@ class Todos extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request, Lists $lists)
     {
-        return view('todo.create', [
-            'title' => 'Create new Todo List!',
-            'list' => Lists::all()
-        ]);
+        if(!$request->key){
+            return view('todo.create', [
+                'title' => 'Create new Todo List!',
+                'list' => $lists->all(),
+                'session' => session('name_list')
+            ]);
+        }else{
+            $nameList = $lists->where('name_list', $request->key)->first();
+            $request->session()->put('name_list', $nameList->name_list);
+            if ($request->session()->has('name_list')) {
+                return view('todo.create', [
+                    'title' => 'Create new Todo List!',
+                    'list' => $lists->all(),
+                    'session' => session('name_list')
+                ]);
+            }
+        }
+        
     }
 
     /**
@@ -43,13 +61,13 @@ class Todos extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-
+    {   
         $validated = $request->validate([
             'lists_id' => 'required',
             'title' => 'required|min:5|max:255',
             'desc' => 'required'
         ]);
+        $request->session()->forget('name_list');
 
         $validated['user_id'] = Auth::user()->id;
         $validated['slug'] = Str::slug($request->title);

@@ -6,12 +6,18 @@
     <div class="row justify-content-center">
         <div class="col-md-8 col-sm-12">
             <h3 class="fw-bolder">New Task</h3>
+            {{ $session }}
             <form action="/todo" method="post">
                 @csrf
-                <select class="form-select mb-3" name="lists_id" aria-label="Default select example">
+                @foreach ($list as $l)
+                    @if ($l->name_list === $session)
+                        <input type="hidden" name="lists_id" value="{{ $l->id }}">
+                    @endif
+                @endforeach
+                <select class="form-select mb-3" aria-label="Default select example" @foreach ($list as $l) @if($l->name_list === $session) {{ 'disabled' }} @endif @endforeach>
                     <option selected>Open this select menu</option>
                         @foreach ($list as $l)
-                            <option value="{{ $l->id }}">{{ $l->name_list }}</option>
+                            <option value="{{ $l->id }}" @if($l->name_list === $session) {{ 'selected' }} @endif>{{ $l->name_list }}</option>
                         @endforeach
                 </select>
                 <div class="form-floating mb-3">
