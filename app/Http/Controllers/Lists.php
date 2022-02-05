@@ -50,7 +50,7 @@ class Lists extends Controller
 
         ModelsLists::create($validated);
 
-        return redirect('/todo/create')->with('successList', 'List anda adalah : ' . $request->name_list);
+        return redirect('/todo/create')->with('successList', 'List anda saat ini : ' . $request->name_list);
 
     }
 
@@ -99,6 +99,6 @@ class Lists extends Controller
         ModelsLists::destroy($id);
         Todo::where('lists_id', $id)->delete();
         
-        return dd('oke');
+        return redirect('/todo')->with('msgDeleteList', 'List has been deleted!');
     }
 }

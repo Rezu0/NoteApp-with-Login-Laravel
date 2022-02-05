@@ -12,6 +12,29 @@
                 <a href="/list/create" class="btn btn-info"><i class="fas fa-plus-circle"></i> New Todo List</a>
             </div>
         </div>
+        <div class="col-12">
+            <h5 class="fw-holder">
+                @if (session()->has('msgSuccess'))
+                    {{ session('msgSuccess') }}
+                @endif
+
+                @if (session()->has('msgFinish'))
+                    {{ session('msgFinish') }}
+                @endif
+
+                @if (session()->has('msgDelete'))
+                    {{ session('msgDelete') }}
+                @endif
+
+                @if (session()->has('msgUpdate'))
+                    {{ session('msgUpdate') }}
+                @endif
+
+                @if (session()->has('msgDeleteList'))
+                    {{ session('msgDeleteList') }}
+                @endif
+            </h5>
+        </div>
         @if ($list->count())
         @foreach ($list as $l)
             <div class="col-12">
@@ -20,7 +43,7 @@
                         <form action="/list/{{ $l->id }}" method="post">
                             @csrf
                             @method('DELETE')
-                            <button class="text-decoration-none text-light position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger fs-6 border-0"><i class="fas fa-trash"></i></button>
+                            <button class="text-decoration-none text-light position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger fs-6 border-0" onclick="return confirm('Are you sure?')"><i class="fas fa-trash"></i></button>
                         </form>
 
                         <a href="/todo/create?key={{ $l->name_list }}" class="text-decoration-none text-light position-absolute top-0 start-0 translate-middle badge rounded-pill bg-success fs-6" >
@@ -43,11 +66,28 @@
                                     <div class="d-flex justify-content-between mb-2">
                                         <div class="fw-bolder fs-6">
                                             @if ($i->finish)
-                                                <del>{{ $loop->iteration . '. ' . $i->title }}</del> <i class="fas fa-check-circle text-success"></i>
+                                                <del>{{ $loop->iteration . '. ' . $i->title }}</del> <i class="fas fa-check-circle text-success"></i> <a href="#" class="text-decoration-none" id="{{ $i->slug }}">Read More!</a>
+                                                <div class="row" style="padding: 0 0 0 20px" id="{{ $i->slug }}1">
+                                                    <div class="col-md-12 fw-lighter">
+                                                        <del>{{ $i->desc }}</del>
+                                                    </div>
+                                                </div>
                                             @else
-                                                {{ $loop->iteration . '. ' . $i->title }}
+                                                {{ $loop->iteration . '. ' . $i->title }} <a href="#" class="text-decoration-none" id="{{ $i->slug }}">Read More!</a>
+                                                <div class="row" style="padding: 0 0 0 20px" id="{{ $i->slug }}1">
+                                                    <div class="col-md-12 fw-lighter">
+                                                        {{ $i->desc }}
+                                                    </div>
+                                                </div>
                                             @endif
-                                            
+                                            <script>
+                                                $('#{{ $i->slug }}1').hide()
+                                                $('#{{ $i->slug }}').click(function(){
+                                                    var txt = $('#{{ $i->slug }}1').is(':visible') ? 'Read More' : 'Read Less'
+                                                    $('#{{ $i->slug }}').text(txt)
+                                                    $(this).next('#{{ $i->slug }}1').slideToggle()
+                                                })
+                                            </script>
                                         </div>
                                         <div>
                                             <div class="row fs-6">

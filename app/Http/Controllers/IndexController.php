@@ -9,7 +9,7 @@ class IndexController extends Controller
 {
     public function index(){
         return view('index', [
-            'list' => Lists::where('user_id', auth()->user()->id)->latest()->paginate(4)
+            'list' => Lists::with('todo')->where('user_id', auth()->user()->id)->latest()->paginate(4)
         ]);
     }
 }

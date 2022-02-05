@@ -45,7 +45,7 @@
           </li>
         </ul>
         <div class="d-flex mx-4 dropdown">
-            <img src="https://picsum.photos/50/50" alt="" class="img-fluid rounded-circle" id="dropdownMenuButton1" data-bs-toggle="dropdown">
+            <img src="https://picsum.photos/50/50" alt="" class="img-fluid rounded-circle" id="dropdownMenuButton1" data-bs-toggle="dropdown" style="margin-right: 100px">
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
               @if (Auth::check())
                 <li><a class="dropdown-item" href="/dashboard"><i class="fas fa-user"></i> Welcome, {{ Auth::user()->username }}</a></li>
@@ -63,10 +63,6 @@
               @endif
               </ul>
         </div>
-        <form class="d-flex">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
       </div>
     </div>
 </nav>
